@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test WebGL - Exemple 2</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"></script>
+  </head>
+  <body style="background-color: #000000;">
+    <div id="container" style="width: 640px; height: 480px; background-color: #000000;">
+    </div>
+    <script type="text/javascript">
+var objContainer;
+var objScene;
+var objCamera;
+var objRenderer;
+var objLight;
+var objCube;
+var intRotation = 0;
+
+/* Initialisation de la scène. */
+init();
+
+/* Mise à jour de la scène. */
+update();
+
+/* Fonction d'initialisation de la scène.
+ */
+function init() {
+    /* Créé la scène. */
+    objScene = new THREE.Scene();
+
+    /* Créé la caméra. */
+    objCamera = new THREE.PerspectiveCamera(45, (640 / 480), 0.1, 2000);
+    objCamera.position.set(0, 25, 300);
+    objScene.add(objCamera);
+
+    /* Créé le moteur de rendu. */
+    objRenderer = new THREE.WebGLRenderer({ antialias: true });
+    objRenderer.setSize(640, 480);
+
+    /* Insertion du moteur de rendu dans le DOM. */
+    objContainer = $('#container');
+    objContainer.append(objRenderer.domElement);
+
+    /* Créé une lumière blanche. */
+    objLight = new THREE.PointLight(0xFFFFFF);
+    objLight.position.set(0, 25, 180);
+    objScene.add(objLight);
+
+    /* Créé un cube avec un matériau de couleur blanche. */
+    objCube = new THREE.Mesh(new THREE.BoxGeometry(100, 100, 100), new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('texture.png') }));
+    objCube.position.set(0, 25, 0);
+    objCube.rotation.set(224, 128, 64);
+    objScene.add(objCube);
+}
+
+/* Fonction permettant de mettre à jour les éléments de la scène.
+ */
+function update() {
+	/* Faisons en sorte que la fonction update() soit appelée en boucle pour
+	   que le cube s'anime. */
+	requestAnimationFrame(update);
+
+	/* Effectue une rotation du cube sur les 3 axes X, Y et Z. */
+	intRotation = (intRotation >= 360) ? 0 : (intRotation + 1);
+	objCube.rotation.x = intRotation * Math.PI / 180;
+	objCube.rotation.y = intRotation * Math.PI / 180;
+	objCube.rotation.z = intRotation * Math.PI / 180;
+
+	/* Effectue le rendu de la scène. */
+	objRenderer.render(objScene, objCamera);   
+}
+    </script>
+  </body>
+</html>
